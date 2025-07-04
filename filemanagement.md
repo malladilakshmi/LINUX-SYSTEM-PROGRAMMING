@@ -1964,8 +1964,681 @@ int main()
         printf("\"goodbye!\" has been appended to message.txt\n");
         return 0;
 }
+63. Write a C program to create a symbolic link named "link.txt" to a file named
+"target.txt"?
+#include<stdio.h>
+#include<unistd.h>
+int main()
+{
+        const char *target="target.txt";
+        const char *linkname="link.txt";
+        if(symlink(target,linkname)==0)
+        {
+                printf("symbolic link 'link.txt' created pointing target.txt\n");
+        }
+        else
+        {
+                perror("error creating symbolic link");
+                return 1;
+        }
+        return 0;
+}
+/*******************************************************************************************************************/
+64. Develop a C program to change the permissions of a file named "file.txt" to read-only?
+#include <windows.h> is a preprocessor directive in C or C++ that tells the compiler to include the Windows API header file, which provides access to thousands of functions, macros, and data types specific to the Windows operating system.
+🔍 What Does <windows.h> Provide?
+
+It gives you access to:
+Feature	Description
+File handling	CreateFile(), SetFileAttributes(), DeleteFile()
+Window management	CreateWindow(), ShowWindow(), MessageBox()
+Process and thread control	CreateProcess(), CreateThread()
+Memory management	VirtualAlloc(), GlobalAlloc()
+System information	GetSystemTime(), GetComputerName()
+Graphics and drawing	GDI functions like BitBlt(), DrawText()
+Registry access	RegOpenKey(), RegQueryValue()
+🧠 Example: Set a File to Read-Only on Windows
+
+#include <windows.h>
+#include <stdio.h>
+
+int main() {
+    const char *filename = "file.txt";
+
+    if (SetFileAttributesA(filename, FILE_ATTRIBUTE_READONLY)) {
+        printf("Set 'file.txt' as read-only.\n");
+    } else {
+        printf("Failed to change file attributes. Error code: %lu\n", GetLastError());
+    }
+
+    return 0;
+}
+
+⚠️ Important Notes
+
+    <windows.h> is only available on Windows platforms.
+
+    It includes many subheaders internally (like winuser.h, winbase.h, etc.), so it can slow down compilation if not managed carefull
+/***************************************************************************************************************************************/
+65. Implement a C program to change the ownership of a file named "file.txt" to the user
+"user1?
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pwd.h>
+#include <sys/types.h>
+
+int main() {
+    const char *filename = "file.txt";
+    const char *username = "user1";
+
+    // Get user information
+    struct passwd *pwd = getpwnam(username);
+    if (pwd == NULL) {
+        perror("User not found");
+        return 1;
+    }
+
+    // Change ownership: user1 as owner, leave group unchanged (-1)
+    if (chown(filename, pwd->pw_uid, -1) == 0) {
+        printf("Ownership of '%s' changed to user '%s'\n", filename, username);
+    } else {
+        perror("Error changing file ownership");
+        return 1;
+    }
+
+    return 0;
+}
+/****************************************************************************************************************************/
+66. Write a C program to get the last modified timestamp of a file named "file.txt"?
+#include<stdio.h>
+#include<sys/stat.h>
+#include<time.h>
+int main()
+{
+        struct stat filestat;
+        if(stat("file.txt",&filestat)==-1)
+        {
+                perror("error receiving file info");
+                return 1;
+        }
+        printf("last modified time of 'file.txt':%s",ctime(&filestat.st_mtime));
+        return 0;
+}
+/************************************************************************************************************************/
+67. Develop a C program to create a temporary file and write some data to it?
+#include<stdio.h>
+#include<stdlib.h>
+int main()
+{
+        FILE *tempfile=tmpfile();
+        if(tempfile==NULL)
+        {
+                perror("error creating temporary file");
+                return 1;
+        }
+        fprintf(tempfile,"this is temporary data.\n");
+        rewind(tempfile);
+        char buffer[100];
+        while(fgets(buffer,sizeof(buffer),tempfile))
+        {
+                printf("%s",buffer);
+        }
+        fclose(tempfile);
+        return 0;
+}
+/**********************************************************************************************************************/
+68. Implement a C program to get the size of a file named "image.jpg"?
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("image.jpg", "rb");  // Open in binary mode
+    long size;
+
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    fseek(file, 0, SEEK_END);   // Move to end of file
+    size = ftell(file);         // Get current position (file size)
+    fclose(file);
+
+    if (size == -1L) {
+        perror("Error getting file size");
+        return 1;
+    }
+
+    printf("Size of 'image.jpg': %ld bytes\n", size);
+    return 0;
+}
+/***************************************************************************************************************************/
+69. Write a C program to create a new text file named "notes.txt" and write multiple lines of
+text to it?
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("notes.txt", "w");  // "w" = write mode (creates or overwrites)
+
+    if (file == NULL) {
+        perror("Error creating file");
+        return 1;
+    }
+
+    // Write multiple lines to the file
+    fprintf(file, "This is the first line.\n");
+    fprintf(file, "This is the second line.\n");
+    fprintf(file, "This is the third line.\n");
+
+    fclose(file);
+
+    printf("Multiple lines written to 'notes.txt'\n");
+    return 0;
+}
+/************************************************************************************************************************/
+70. Develop a C program to count the number of words in a file named "essay.txt"?
+#include <stdio.h>
+#include <ctype.h>
+
+int main() {
+    FILE *file = fopen("essay.txt", "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    int ch, inWord = 0, wordCount = 0;
+
+    while ((ch = fgetc(file)) != EOF) {
+        if (isspace(ch)) {
+            if (inWord) {
+                wordCount++;
+                inWord = 0;
+            }
+        } else {
+            inWord = 1;
+        }
+    }
+
+    // If the last word doesn't end with space or newline
+    if (inWord) {
+        wordCount++;
+    }
+
+    fclose(file);
+
+    printf("Total words in 'essay.txt': %d\n", wordCount);
+    return 0;
+}
+/***********************************************************************************************************************/
+71. Write a C program to create a symbolic link named "shortcut.txt" to a file named
+"target.txt"?
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+    const char *target = "target.txt";
+    const char *link = "shortcut.txt";
+
+    // Create symbolic link
+    if (symlink(target, link) == 0) {
+        printf("Symbolic link '%s' created pointing to '%s'\n", link, target);
+    } else {
+        perror("symlink");
+    }
+
+    return 0;
+}
+/*********************************************************************************************************************/
+72. Develop a C program to change the permissions of a file named "important.doc" to read
+and write for the owner only?
+#include<stdio.h>
+#include<stdlib.h>
+#include<sys/stat.h>
+int main()
+{
+        const char *filename="important.doc";
+        if(chmod(filename,S_IRUSR|S_IWUSR)==-1)
+        {
+                perror("chmod failed");
+                return EXIT_FAILURE;
+        }
+        printf("permissioms of '%s' changed to read and write for owner only(0600).\n",filename);
+        return EXIT_SUCCESS;
+}
+/**********************************************************************************************************************/
+73. Write a C program to get the last access time of a file named "data.txt"?
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <time.h>
+
+int main() {
+    const char *filename = "data.txt";
+    struct stat file_stat;
+
+    // Get file statistics
+    if (stat(filename, &file_stat) == -1) {
+        perror("stat failed");
+        return EXIT_FAILURE;
+    }
+
+    // Convert last access time to readable format
+    printf("Last access time of '%s': %s", filename, ctime(&file_stat.st_atime));
+
+    return EXIT_SUCCESS;
+}
+/*************************************************************************************************************************/
+74. Develop a C program to read and display the contents of a CSV file named "data.csv"?
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *file;
+    char buffer[1024];
+    const char *filename = "data.csv";
+
+    // Open the CSV file for reading
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return EXIT_FAILURE;
+    }
+
+    printf("Contents of '%s':\n", filename);
+    
+    // Read and print each line
+    while (fgets(buffer, sizeof(buffer), file)) {
+        printf("%s", buffer);  // buffer already includes newline if present
+    }
+
+    fclose(file);
+    return EXIT_SUCCESS;
+}
+/****************************************************************************************************************************/
+75. Implement a C program to truncate a file named "file.txt" to a specified
+length?
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+int main() {
+    const char *filename = "file2.txt";
+    off_t new_length;
+
+    // Ask user for the desired length
+    printf("Enter the length to truncate '%s' to: ", filename);
+    if (scanf("%ld", &new_length) != 1 || new_length < 0) {
+        fprintf(stderr, "Invalid input.\n");
+        return EXIT_FAILURE;
+    }
+
+    // Truncate the file to the given length
+    if (truncate(filename, new_length) == -1) {
+        perror("truncate failed");
+        return EXIT_FAILURE;
+    }
+
+    printf("File '%s' truncated to %ld bytes.\n", filename, new_length);
+    return EXIT_SUCCESS;
+}
+/****************************************************************************************************************************/
+76. Write a C program to search for a specific word in a file named "data.txt" and display
+the line number(s) where it occurs?
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_LINE_LENGTH 1024
+
+int containsWord(const char *line, const char *word) {
+    const char *p = line;
+    size_t word_len = strlen(word);
+
+    while ((p = strstr(p, word)) != NULL) {
+        // Check word boundaries
+        if ((p == line || !isalnum(*(p - 1))) &&
+            (!isalnum(*(p + word_len)))) {
+            return 1;
+        }
+        p += word_len;
+    }
+
+    return 0;
+}
+
+int main() {
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char word[100];
+    int lineNumber = 0;
+    int found = 0;
+
+    printf("Enter the word to search: ");
+    scanf("%s", word);
+
+    file = fopen("data.txt", "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    while (fgets(line, MAX_LINE_LENGTH, file)) {
+        lineNumber++;
+        if (containsWord(line, word)) {
+            printf("Word found on line %d\n", lineNumber);
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("Word not found in the file.\n");
+    }
+
+    fclose(file);
+    return 0;
+}
+/********************************************************************************************************************************/
+77. Develop a C program to get the file type (regular file, directory, symbolic link, etc.) of a
+given path?
+#include <stdio.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+void print_file_type(const char *path) {
+    struct stat fileStat;
+
+    // Use lstat to avoid following symbolic links
+    if (lstat(path, &fileStat) == -1) {
+        perror("Error getting file status");
+        return;
+    }
+
+    printf("File type of '%s': ", path);
+
+    if (S_ISREG(fileStat.st_mode))
+        printf("Regular file\n");
+    else if (S_ISDIR(fileStat.st_mode))
+        printf("Directory\n");
+    else if (S_ISLNK(fileStat.st_mode))
+        printf("Symbolic link\n");
+    else if (S_ISCHR(fileStat.st_mode))
+        printf("Character device\n");
+    else if (S_ISBLK(fileStat.st_mode))
+        printf("Block device\n");
+    else if (S_ISFIFO(fileStat.st_mode))
+        printf("FIFO/Named pipe\n");
+    else if (S_ISSOCK(fileStat.st_mode))
+        printf("Socket\n");
+    else
+        printf("Unknown type\n");
+}
+
+int main() {
+    char path[512];
+
+    printf("Enter the path: ");
+    scanf("%s", path);
+
+    print_file_type(path);
+
+    return 0;
+}
+/*******************************************************************************************************************/
+78. Implement a C program to read and display the contents of a binary file named
+"binary.bin"?
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *file;
+    unsigned char buffer[1024];
+    size_t bytesRead;
+    int i;
+
+    // Open the binary file in read mode
+    file = fopen("binary.bin", "rb");
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    printf("Contents of binary.bin (in hexadecimal):\n");
+
+    // Read and display file content in hex format
+    while ((bytesRead = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+        for (i = 0; i < bytesRead; i++) {
+            printf("%02X ", buffer[i]);
+            if ((i + 1) % 16 == 0)  // Print 16 bytes per line
+                printf("\n");
+        }
+    }
+
+    printf("\n");
+
+    fclose(file);
+    return 0;
+}
+/*************************************************************************************************************************/
+79. Implement a C program to create a new directory named "Logs" and move all files with
+the ".log" extension into it?
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+int has_log_extension(const char *filename) {
+    const char *ext = strrchr(filename, '.');
+    return (ext && strcmp(ext, ".log") == 0);
+}
+
+int main() {
+    DIR *dir;
+    struct dirent *entry;
+    struct stat st;
+
+    // Create "Logs" directory if it doesn't exist
+    if (stat("Logs", &st) == -1) {
+        if (mkdir("Logs", 0755) != 0) {
+            perror("Failed to create Logs directory");
+            return 1;
+        }
+    }
+
+    // Open current directory
+    dir = opendir(".");
+    if (dir == NULL) {
+        perror("Failed to open current directory");
+        return 1;
+    }
+
+    // Process files
+    while ((entry = readdir(dir)) != NULL) {
+        // Skip directories
+        if (entry->d_type == DT_REG && has_log_extension(entry->d_name)) {
+            char new_path[512];
+            snprintf(new_path, sizeof(new_path), "Logs/%s", entry->d_name);
+
+            if (rename(entry->d_name, new_path) != 0) {
+                perror("Failed to move file");
+            } else {
+                printf("Moved: %s -> %s\n", entry->d_name, new_path);
+            }
+        }
+    }
+
+    closedir(dir);
+    return 0;
+}
+/**************************************************************************************************************************/
+80. Write a C program to check if a file named "config.ini" is writable?
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+    const char *filename = "config.ini";
+
+    // Check if the file exists and is writable
+    if (access(filename, F_OK) != 0) {
+        printf("File '%s' does not exist.\n", filename);
+    } else if (access(filename, W_OK) == 0) {
+        printf("File '%s' is writable.\n", filename);
+    } else {
+        printf("File '%s' is not writable.\n", filename);
+    }
+
+    return 0;
+}
+/******************************************************************************************************************************/
+81. Develop a C program to read the contents of a text file named "instructions.txt" and
+execute the instructions as shell commands?
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LINE 1024
+
+int main() {
+    FILE *file;
+    char line[MAX_LINE];
+
+    file = fopen("instructions.txt", "r");
+    if (file == NULL) {
+        perror("Error opening instructions.txt");
+        return 1;
+    }
+
+    while (fgets(line, sizeof(line), file)) {
+        // Remove newline character at end
+        line[strcspn(line, "\n")] = 0;
+
+        if (strlen(line) == 0)
+            continue; // skip empty lines
+
+        printf("Executing: %s\n", line);
+        int result = system(line);
+
+        if (result == -1) {
+            perror("Error executing command");
+        }
+    }
+
+    fclose(file);
+    return 0;
+    }
+/******************************************************************************************************************************/
+82. Develop a C program to read data from a binary file named "data.bin" and display it in
+hexadecimal format?
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *file;
+    unsigned char buffer[16];  // Buffer to read 16 bytes at a time
+    size_t bytesRead;
+    int offset = 0;
+
+    file = fopen("data.bin", "rb");
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    printf("Hexadecimal contents of data.bin:\n\n");
+
+    while ((bytesRead = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+        // Print offset
+        printf("%08X  ", offset);
+
+        // Print hex values
+        for (size_t i = 0; i < bytesRead; i++) {
+            printf("%02X ", buffer[i]);
+        }
+
+        // Fill in spaces if line is short
+        for (size_t i = bytesRead; i < 16; i++) {
+            printf("   ");
+        }
+
+        // Print ASCII representation
+        printf(" |");
+        for (size_t i = 0; i < bytesRead; i++) {
+            if (buffer[i] >= 32 && buffer[i] <= 126) {
+                printf("%c", buffer[i]);
+            } else {
+                printf(".");
+            }
+        }
+        printf("|\n");
+
+        offset += bytesRead;
+    }
+
+    fclose(file);
+    return 0;
+}
+/*****************************************************************************************************************/
+83. Develop a C program to recursively copy all files and directories from one directory to
+another?
+repeated question
+/***************************************************************************************************************/
+84. Develop a C program to get the file type (regular file, directory, symbolic link, etc.) of a
+given path?
+#include <stdio.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+void get_file_type(const char *path) {
+    struct stat fileStat;
+
+    // Use lstat to avoid following symlinks
+    if (lstat(path, &fileStat) == -1) {
+        perror("Error retrieving file status");
+        return;
+    }
+
+    printf("File type of '%s': ", path);
+
+    if (S_ISREG(fileStat.st_mode))
+        printf("Regular file\n");
+    else if (S_ISDIR(fileStat.st_mode))
+        printf("Directory\n");
+    else if (S_ISLNK(fileStat.st_mode))
+        printf("Symbolic link\n");
+    else if (S_ISCHR(fileStat.st_mode))
+        printf("Character device\n");
+    else if (S_ISBLK(fileStat.st_mode))
+        printf("Block device\n");
+    else if (S_ISFIFO(fileStat.st_mode))
+        printf("FIFO (named pipe)\n");
+    else if (S_ISSOCK(fileStat.st_mode))
+        printf("Socket\n");
+    else
+        printf("Unknown\n");
+}
+
+int main() {
+    char path[512];
+
+    printf("Enter the file path: ");
+    scanf("%s", path);
+
+    get_file_type(path);
+
+    return 0;
+}
+/*********************************************************************************************************************/
 
 ```
+```
+
+```C
+
+
 
 
 
