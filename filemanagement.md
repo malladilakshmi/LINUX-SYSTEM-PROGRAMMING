@@ -852,10 +852,8 @@ int main() {
     if (bytes_read == -1) {
         perror("Read error");
     } else {
-```
         printf("EOF reached. No more writers.\n");
     }
-
     close(fd);
     return EXIT_SUCCESS;
 }
