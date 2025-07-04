@@ -1049,7 +1049,7 @@ int main() {
     return 0;
 }
 /*************************************************************************************************************/
-. Develop a C program to get the permissions (mode) of a file named "file.txt"?
+34. Develop a C program to get the permissions (mode) of a file named "file.txt"?
 // file_permissions.c
 #include <stdio.h>
 #include <stdlib.h>
@@ -1454,6 +1454,8 @@ int main() {
 }
 
 ```
+
+```C
 44.Implement a C program to read the contents of a text file named "instructions.txt" and
 execute the instructions as shell commands?
 // execute_instructions.c
