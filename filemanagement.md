@@ -243,7 +243,9 @@ int main() {
 }
 ```
 
-```C12.write a c program to create a new directory named "backup" in the parent directory? 
+```C
+
+12.write a c program to create a new directory named "backup" in the parent directory? 
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
