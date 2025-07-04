@@ -29,6 +29,7 @@ int main()
 ```
 
 ```C
+
 1.write a c program to create a new textfile and write "hello world" to it?
 #include <stdio.h>
 
@@ -241,6 +242,7 @@ int main() {
     fclose(file);
     return 0;
 }
+
 ```
 
 ```C
@@ -857,6 +859,7 @@ int main() {
     close(fd);
     return EXIT_SUCCESS;
 }
+
 ```
 
 ```C
@@ -2634,9 +2637,7 @@ int main() {
 /*********************************************************************************************************************/
 
 ```
-```
 
-```C
 
 
 
